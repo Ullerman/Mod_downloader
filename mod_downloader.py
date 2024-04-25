@@ -19,15 +19,16 @@ mod_urls_dict = json.loads(mod_urls_json)
 
 mod_urls = mod_urls_dict['mod_urls']
 
-def download_mods():
+def download_mods(path):
   for url in mod_urls:
       filename = wget.detect_filename(url)
       r = requests.get(url, allow_redirects=True)
       open(filename, "wb").write(r.content)
       print(f"Downloaded {filename}")
       try:
-        shutil.move(filename, minecraft_mods_directory)
-        print(f"Moved {filename} to {minecraft_mods_directory}")
+        shutil.move(filename, path)
+        print(f"Moved {filename} to {path}")
       except shutil.Error as e:
         print(e)
-        pass
+        print(f"Failed to move {filename} to {path}")
+        os.remove(filename)
